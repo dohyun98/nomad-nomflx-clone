@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { useMatch, PathMatch } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineCaretRight, AiOutlineExclamationCircle } from "react-icons/ai";
 
 const Wrapper = styled.div`
   background: black;
@@ -124,6 +125,45 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
+const Btn = styled.div`
+  display: flex;
+  margin-top: 20px;
+`;
+
+const buttonStyles = `
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0px 15px;
+  border-radius: 5px;
+  border: 0;
+  width: 100px;
+  height: 40px;
+  font-size: 17px;
+  font-weight: 400;
+  cursor: pointer;
+`;
+
+const PlayBtn = styled.button`
+  ${buttonStyles}
+  margin-right: 10px;
+  background-color: ${(props) => props.theme.white.lighter};
+  color: ${(props) => props.theme.black.veryDark};
+  &:hover {
+    background-color: ${(props) => props.theme.white.darker};
+  }
+`;
+
+const InfoBtn = styled.button`
+  ${buttonStyles}
+  width: 130px;
+  background-color: rgba(109, 109, 110, 0.7);
+  color: ${(props) => props.theme.white.lighter};
+  &:hover {
+    background-color: rgba(109, 109, 110, 0.4);
+  }
+`;
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -197,6 +237,16 @@ function Home() {
           <Banner onClick={incraseIndex} bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
+            <Btn>
+              <PlayBtn>
+                <AiOutlineCaretRight size="28" />
+                재생
+              </PlayBtn>
+              <InfoBtn onClick={() => onBoxClicked(data?.results[0].id!)}>
+                <AiOutlineExclamationCircle />
+                상세 정보
+              </InfoBtn>
+            </Btn>
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
