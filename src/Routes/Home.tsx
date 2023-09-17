@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { useMatch, PathMatch } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineCaretRight, AiOutlineExclamationCircle } from "react-icons/ai";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 const Wrapper = styled.div`
   background: black;
@@ -164,6 +165,27 @@ const InfoBtn = styled.button`
   }
 `;
 
+const SliderBtn = `
+background-color: rgba(0, 0, 0, 0.3);
+position: absolute;
+height: 100%;
+opacity: 0;
+cursor: pointer;
+&:hover {
+  opacity: 1;
+}
+`;
+
+const LeftBtn = styled(BiChevronLeft)`
+  ${SliderBtn}
+  left: 0;
+`;
+
+const RightBtn = styled(BiChevronRight)`
+  ${SliderBtn}
+  right: 0;
+`;
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -220,6 +242,16 @@ function Home() {
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
+  const decreaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+    }
+  };
+
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -234,7 +266,7 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner onClick={incraseIndex} bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
+          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
             <Btn>
@@ -258,6 +290,7 @@ function Home() {
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
+                <LeftBtn size="70" onClick={decreaseIndex} />
                 {data?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
@@ -277,6 +310,7 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
+                <RightBtn size="70" onClick={incraseIndex} />
               </Row>
             </AnimatePresence>
           </Slider>
