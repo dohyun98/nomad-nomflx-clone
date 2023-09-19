@@ -187,14 +187,18 @@ const RightBtn = styled(BiChevronRight)`
 `;
 
 const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
+  hidden: (isNext: boolean) => {
+    return {
+      x: isNext ? window.outerWidth + 5 : -window.outerWidth - 5,
+    };
   },
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth - 5,
+  exit: (isNext: boolean) => {
+    return {
+      x: isNext ? -window.outerWidth - 5 : window.outerWidth + 5,
+    };
   },
 };
 
@@ -233,6 +237,7 @@ function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [isNext, setIsNext] = useState(true);
   const incraseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -240,6 +245,7 @@ function Home() {
       const totalMovies = data.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      setIsNext(() => true);
     }
   };
   const decreaseIndex = () => {
@@ -249,6 +255,7 @@ function Home() {
       const totalMovies = data.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+      setIsNext(() => false);
     }
   };
 
@@ -281,12 +288,13 @@ function Home() {
             </Btn>
           </Banner>
           <Slider>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+            <AnimatePresence custom={isNext} initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
+                custom={isNext}
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
