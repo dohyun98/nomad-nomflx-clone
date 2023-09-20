@@ -8,7 +8,30 @@ interface IMovie {
   title: string;
   overview: string;
 }
-
+export interface IGetDetail {
+  id: number;
+  backdrop_path: string;
+  poster_path: string;
+  overview: string;
+  vote_average: number; //평점
+  genres: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
+  production_companies: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
+  runtime: number;
+  title: string;
+  original_title?: string;
+  first_air_date: string;
+  release_date: string;
+}
 export interface IGetMoviesResult {
   dates: {
     maximum: string;
